@@ -17,9 +17,9 @@ helm upgrade --install argocd argo/argo-cd --namespace argocd --create-namespace
 
 ### AWS Keys
 **Tasks:**
-1. Generate AWS Access and Secret Keys
-2. Register both keys as environmental variables
-3. Create an `aws-creds.conf` file containing both keys
+1. Generate AWS Access and Secret Keys  
+2. Register both keys as environmental variables  
+3. Create an `aws-creds.conf` file containing both keys  
 
 AWS is leveraged to create an cloud thingy. You will need an `AWS Access Key` and an `AWS Secret Key`. Instructions for creating your keys are available in the [AWS Documentation](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_access-keys.html)
 
@@ -51,6 +51,8 @@ cat aws-creds.conf
 
 <details>
 <summary> Example Output</summary>
+
+```
 AWS Access Key: AKIAIOSFODNN7EXAMPLE
 
 AWS Secret Key: wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
@@ -59,6 +61,7 @@ Credentials File:
 [default]
 aws_access_key_id = AKIAIOSFODNN7EXAMPLE
 aws_secret_access_key = CwJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY  
+```
 
 </details>
 
@@ -91,6 +94,7 @@ Install the `up` CLI on your local system according to the [Upbound Documentatio
 Login to your Upbound Cloud account using the `up login` command.
 
 Verify your login with the `up ctp list` command to see your configured Upbound managed control plane.
+
 ```
 up ctp list
 NAME           ID                                     SELF-HOSTED   STATUS
@@ -109,9 +113,13 @@ echo User Token: $UP_TOKEN
 ```
 <details>
 <summary>Example Output</summary>
+
+```
 Control Plane ID: f1bea9c1-ef28-4f84-abcd-1234ba095bd
 
 User Token: u7TWaSb5P77g2yGGCWYH9856cy3ePCe5bMXywnBuaFXFSr3QqjsKj45KnwSt4byKLZwmnp4mdGqMJQvtCdM4nD8WcLxJekkPXRt7bymRk6wTRERdwdeJJZ7MS9NcZ.uZcYUdpxTyttyNhE2zGCGt9Qz43hfXrq2tpLqd2NCMg87bBrRSQcvaXxqzyEQtnp9ChH-PjBTjtLwr5Et8exwfqFwgGSWHk9_j8L9c6tAn5a5jQRx999puwghn8DJZCMcaZ3jAqngKMFECyTX3aqGtRT8Ts53yDU4ebVbHNtXZnVE9hCnwVp4MgnBeu9ynkcr5kfwrsuuJeNgJLTnQQdJj4TybhMNmZSDNCYYQVV9EqqjhyWnCJzr5avhQm4FSuNPdHdq8c2B7te9HrNnCf3apUAEuuzcGZGV7u9UcxnCdZsX79ESmJmDTx3WUyQcBVhFSAe2vzkej6bdF2vvuq
+```
+
 </details>
 
 ## Configure Upbound Cloud
