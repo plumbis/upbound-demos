@@ -2,10 +2,14 @@
 
 ## Prerequisites
 
-- Rancher Desktop
-- Upbound Cloud account
-- `git` 
-- AWS access keys
+- `git` installed locally.
+- [Rancher Desktop](#rancher-desktop) installed locally.
+- An [AWS Account](#aws-keys)
+- An [Upbound Cloud account](#upbound-cloud)
+
+### Clone the demo
+Clone this demo repo locally 
+`git clone https://github.com/upbound/demos.git --depth 1`
 
 ### Rancher Desktop
 This demo relies on [Rancher Desktop](https://rancherdesktop.io/) to provide the Kubernetes infrastructure. Any other Kubernetes environment can be used, but an ingress must be used to access the ArgoCD dashboard.  
