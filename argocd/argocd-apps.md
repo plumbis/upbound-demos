@@ -13,9 +13,11 @@ This demo relies on [Rancher Desktop](https://rancherdesktop.io/) to provide the
 <details>
 <summary> I'm not using Rancher Desktop</summary>
 If another environment is used replace the localhost address `127.0.0.1` used in the ArgoCD Helm command with your external IP.
+
 ```
 helm upgrade --install argocd argo/argo-cd --namespace argocd --create-namespace --set server.ingress.hosts="{argo-cd.127.0.0.1.nip.io}" --values argocd/helm-values.yaml --wait
 ```
+
 </details>
 
 ### AWS Keys
