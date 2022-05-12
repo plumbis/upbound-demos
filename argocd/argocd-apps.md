@@ -18,7 +18,7 @@ This demo relies on [Rancher Desktop](https://rancherdesktop.io/) to provide the
 <summary> I'm not using Rancher Desktop</summary>
 If another environment is used replace the localhost address `127.0.0.1` used in the ArgoCD Helm command with your external IP.
 
-```
+```console
 helm upgrade --install argocd argo/argo-cd --namespace argocd --create-namespace --set server.ingress.hosts="{argo-cd.127.0.0.1.nip.io}" --values argocd/helm-values.yaml --wait
 ```
 
@@ -34,14 +34,14 @@ AWS is leveraged to create an cloud thingy. You will need an `AWS Access Key` an
 
 Create local variables `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY`
 
-```
+```bash
 export AWS_ACCESS_KEY_ID="AKIAIOSFODNN7EXAMPLE"
 export AWS_SECRET_ACCESS_KEY="wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY"
 ```
 
 Create a text file named `aws-creds.conf` that will be used to generate a Kubernetes secret resource
 
-```
+```bash
 echo "[default]
 aws_access_key_id = $AWS_ACCESS_KEY_ID
 aws_secret_access_key = $AWS_SECRET_ACCESS_KEY
@@ -49,7 +49,7 @@ aws_secret_access_key = $AWS_SECRET_ACCESS_KEY
 ```
 
 **Verify:**
-```
+```bash
 echo AWS Access Key: $AWS_ACCESS_KEY_ID
 echo 
 echo AWS Secret Key: $AWS_SECRET_ACCESS_KEY
@@ -61,7 +61,7 @@ cat aws-creds.conf
 <details>
 <summary> Example Output</summary>
 
-```
+```bash
 AWS Access Key: AKIAIOSFODNN7EXAMPLE
 
 AWS Secret Key: wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
@@ -94,7 +94,7 @@ Next, generate a [user token](https://cloud.upbound.io/docs/upbound-cloud/connec
 
 Replace the sample token below with your private token.  
 
-```
+```bash
 export UP_TOKEN="u7TWaSb5P77g2yGGCWYH9856cy3ePCe5bMXywnBuaFXFSr3QqjsKj45KnwSt4byKLZwmnp4mdGqMJQvtCdM4nD8WcLxJekkPXRt7bymRk6wTRERdwdeJJZ7MS9NcZ.uZcYUdpxTyttyNhE2zGCGt9Qz43hfXrq2tpLqd2NCMg87bBrRSQcvaXxqzyEQtnp9ChH-PjBTjtLwr5Et8exwfqFwgGSWHk9_j8L9c6tAn5a5jQRx999puwghn8DJZCMcaZ3jAqngKMFECyTX3aqGtRT8Ts53yDU4ebVbHNtXZnVE9hCnwVp4MgnBeu9ynkcr5kfwrsuuJeNgJLTnQQdJj4TybhMNmZSDNCYYQVV9EqqjhyWnCJzr5avhQm4FSuNPdHdq8c2B7te9HrNnCf3apUAEuuzcGZGV7u9UcxnCdZsX79ESmJmDTx3WUyQcBVhFSAe2vzkej6bdF2vvuq"
 ```
 
@@ -104,7 +104,7 @@ Login to your Upbound Cloud account using the `up login` command.
 
 Verify your login with the `up ctp list` command to see your configured Upbound managed control plane.
 
-```
+```bash
 up ctp list
 NAME           ID                                     SELF-HOSTED   STATUS
 demo   f1bea9c1-ef28-4f84-abcd-1234ba095bd   false         ready
@@ -115,15 +115,17 @@ Use the `ID` value to create the local variable `UP_CTP_ID`.
 `export UP_CTP_ID="f1bea9c1-ef28-4f84-abcd-1234ba095bd"`
 
 **Verify:**
-```
+
+```bash
 echo Control Plane ID: $UP_CTP_ID
 echo 
 echo User Token: $UP_TOKEN
 ```
+
 <details>
 <summary>Example Output</summary>
 
-```
+```console
 Control Plane ID: f1bea9c1-ef28-4f84-abcd-1234ba095bd
 
 User Token: u7TWaSb5P77g2yGGCWYH9856cy3ePCe5bMXywnBuaFXFSr3QqjsKj45KnwSt4byKLZwmnp4mdGqMJQvtCdM4nD8WcLxJekkPXRt7bymRk6wTRERdwdeJJZ7MS9NcZ.uZcYUdpxTyttyNhE2zGCGt9Qz43hfXrq2tpLqd2NCMg87bBrRSQcvaXxqzyEQtnp9ChH-PjBTjtLwr5Et8exwfqFwgGSWHk9_j8L9c6tAn5a5jQRx999puwghn8DJZCMcaZ3jAqngKMFECyTX3aqGtRT8Ts53yDU4ebVbHNtXZnVE9hCnwVp4MgnBeu9ynkcr5kfwrsuuJeNgJLTnQQdJj4TybhMNmZSDNCYYQVV9EqqjhyWnCJzr5avhQm4FSuNPdHdq8c2B7te9HrNnCf3apUAEuuzcGZGV7u9UcxnCdZsX79ESmJmDTx3WUyQcBVhFSAe2vzkej6bdF2vvuq
@@ -146,14 +148,15 @@ This simplifies the `kubectl` command settings for the rest of this demo.
 The settings are written to `kubeconfig-up-apps.yaml`
 
 **Verify**
-```
+
+```console
 cat kubeconfig-up-apps.yaml
 ```
 
 <details>
 <summary>Example Output</summary>
 
-```
+```yaml
 apiVersion: v1
 clusters:
 - cluster:
@@ -173,7 +176,7 @@ users:
     token: u7TWaSb5P77g2yGGCWYH9856cy3ePCe5bMXywnBuaFXFSr3QqjsKj45KnwSt4byKLZwmnp4mdGqMJQvtCdM4nD8WcLxJekkPXRt7bymRk6wTRERdwdeJJZ7MS9NcZ.uZcYUdpxTyttyNhE2zGCGt9Qz43hfXrq2tpLqd2NCMg87bBrRSQcvaXxqzyEQtnp9ChH-PjBTjtLwr5Et8exwfqFwgGSWHk9_j8L9c6tAn5a5jQRx999puwghn8DJZCMcaZ3jAqngKMFECyTX3aqGtRT8Ts53yDU4ebVbHNtXZnVE9hCnwVp4MgnBeu9ynkcr5kfwrsuuJeNgJLTnQQdJj4TybhMNmZSDNCYYQVV9EqqjhyWnCJzr5avhQm4FSuNPdHdq8c2B7te9HrNnCf3apUAEuuzcGZGV7u9UcxnCdZsX79ESmJmDTx3WUyQcBVhFSAe2vzkej6bdF2vvuq
 ```
 
-</summary>
+</details>
 
 ### Enable the Upbound Providers
 Using the `kubeconfig-up-apps.yaml` configuration file add providers to your Upbound Cloud control plane.
@@ -183,14 +186,14 @@ Using the `kubeconfig-up-apps.yaml` configuration file add providers to your Upb
 - Custom App: `kubectl --kubeconfig kubeconfig-up-apps.yaml apply --filename crossplane-config/config-app.yaml`
 
 **Verify:**
-```
+```console
 kubectl --kubeconfig kubeconfig-up-apps.yaml get providers
 ```
 
 <details>
 <summary>Example Output</summary>
 
-```
+```console
 kubectl --kubeconfig kubeconfig-up-apps.yaml get providers
 NAME                             INSTALLED   HEALTHY   PACKAGE                                 AGE
 crossplane-provider-aws          True        True      crossplane/provider-aws:v0.24.1         21h
@@ -204,23 +207,30 @@ crossplane-provider-sql          True        True      crossplane/provider-sql:v
 Use your AWS credentials to generate a secret object in the `upbound-system` namespace
 `kubectl --kubeconfig kubeconfig-up-apps.yaml --namespace upbound-system create secret generic aws-creds --from-file creds=./aws-creds.conf`
 
-```
-kubectl --kubeconfig kubeconfig-up-apps.yaml get secrets aws-creds -n upbound-system                                                               ✔  rancher-desktop ⎈
-NAME        TYPE     DATA   AGE
-aws-creds   Opaque   1      32m```
-
 Next, use this token to generate an AWS provider configuration
 `kubectl --kubeconfig kubeconfig-up-apps.yaml apply --filename crossplane-config/provider-config-aws-up.yaml`
 
-And view the Kubernetes object with `kubectl --kubeconfig kubeconfig-up-apps.yaml describe providerconfigs.aws.crossplane.io`
+
+**Verify:**
+```console
+kubectl --kubeconfig kubeconfig-up-apps.yaml get secrets aws-creds -n upbound-system  
+
+kubectl --kubeconfig kubeconfig-up-apps.yaml describe providerconfigs.aws.crossplane.io default
+```
 
 <details>
-<summary>Provider configuration output</summary>
-```
+<summary>Example Output</summary>
+
+```yaml
+kubectl --kubeconfig kubeconfig-up-apps.yaml get secrets aws-creds -n upbound-system
+NAME        TYPE     DATA   AGE
+aws-creds   Opaque   1      21h
+
+kubectl --kubeconfig kubeconfig-up-apps.yaml describe providerconfigs.aws.crossplane.io default
 Name:         default
 Namespace:
-Labels:       <none>
-Annotations:  <none>
+Labels:       &lt;none&gt;
+Annotations:  &lt;none&gt;
 API Version:  aws.crossplane.io/v1beta1
 Kind:         ProviderConfig
 Metadata:
@@ -270,20 +280,50 @@ Spec:
       Namespace:  upbound-system
     Source:       Secret
 Status:
-Events:  <none>```
+Events:  &lt;none&gt;
+```
+
 </details>
 
 ## Install ArgoCD
+**Tasks:**
+1. Add the Helm repo
+2. Update the Helm cache
+3. Install the ArgoCD Helm chart
+4. Generate an ArgoCD Kubernetes secret
 
-Install ArgoCD on your local Rancher Desktop environment
-- Add the Helm Repo
+
+Install ArgoCD on your Kubernetes environment
+- Add the Helm Repo  
 `helm repo add argo https://argoproj.github.io/argo-helm`
-- Update Helm 
+- Update Helm  
 ` helm repo update`
-- Install the ArgoCD Helm Chart 
+- Install the ArgoCD Helm Chart  
 `helm upgrade --install argocd argo/argo-cd --namespace argocd --create-namespace --set server.ingress.hosts="{argo-cd.127.0.0.1.nip.io}" --values argocd/helm-values.yaml --wait`
 
+Next, use the following code snippet to generate a Kubernetes secret in the argocd namespace.  
+
+```yaml
+echo "apiVersion: v1
+kind: Secret
+metadata:
+  name: upbound
+  labels:
+    argocd.argoproj.io/secret-type: cluster
+type: Opaque
+stringData:
+  name: upbound
+  server: $SERVER
+  config: |
+    {
+      \"bearerToken\": \"$UP_TOKEN\"
+    }" \
+    | kubectl \
+    --namespace argocd \
+    apply --filename -
 ```
+
+```console
 kubectl get pods -n argocd
 NAME                                                READY   STATUS    RESTARTS   AGE
 argocd-redis-6484cccf5-rm4pk                        1/1     Running   0          15h
@@ -296,7 +336,8 @@ argocd-application-controller-0                     1/1     Running   0         
 ```
 
 ## Create a secret in the argocd namespace
-```echo "apiVersion: v1
+```yaml
+echo "apiVersion: v1
 kind: Secret
 metadata:
   name: upbound
@@ -316,7 +357,7 @@ stringData:
 ```
 
 and Verify
-```
+```console
 kubectl describe secret upbound -n argocd
 Name:         upbound
 Namespace:    argocd
