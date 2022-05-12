@@ -3,12 +3,17 @@
 ## Prerequisites
 
 - `git` installed locally.
+- A [GitHub](https://www.github.com) GitHub account.
 - [Rancher Desktop](#rancher-desktop) installed locally.
-- An [AWS Account](#aws-keys)
-- An [Upbound Cloud account](#upbound-cloud)
+- An [AWS Account](#aws-keys).
+- An [Upbound Cloud account](#upbound-cloud).
 
-### Clone the demo
-With [GitHub](https://github.com/upbound/demos/tree/main/argocd), fork this repo to your personal GitHub space.
+### Fork the repo
+**Tasks:**
+1. Fork this repo.
+2. Create a REPO_URL environmental variable.
+
+Using [GitHub](https://github.com/upbound/demos/tree/main/argocd), fork this repo to your personal GitHub space.
 
 HTTPS clone the repo to your local environment.
 
@@ -23,7 +28,7 @@ If you cannot use HTTPS to clone the repo you will still need to use the HTTPS G
 
 ![HTTPS URL from GitHub](images/https-repo-url.png)
 
-Use this HTTPS address to create the `REPO_URL` environmental variable.  
+Use this HTTPS address to create the `REPO_URL` environmental variable. From the above example image  
 `export REPO_URL=https://github.com/plumbis/upbound-demos.git`
 </details>
 
@@ -126,7 +131,7 @@ Next, generate a [user token](https://cloud.upbound.io/docs/upbound-cloud/connec
 Replace the sample token below with your private token.  
 
 ```bash
-export UP_TOKEN="u7TWaSb5P77g2yGGCWYH9856cy3ePCe5bMXywnBuaFXFSr3QqjsKj45KnwSt4byKLZwmnp4mdGqMJQvtCdM4nD8WcLxJekkPXRt7bymRk6wTRERdwdeJJZ7MS9NcZ.uZcYUdpxTyttyNhE2zGCGt9Qz43hfXrq2tpLqd2NCMg87bBrRSQcvaXxqzyEQtnp9ChH-PjBTjtLwr5Et8exwfqFwgGSWHk9_j8L9c6tAn5a5jQRx999puwghn8DJZCMcaZ3jAqngKMFECyTX3aqGtRT8Ts53yDU4ebVbHNtXZnVE9hCnwVp4MgnBeu9ynkcr5kfwrsuuJeNgJLTnQQdJj4TybhMNmZSDNCYYQVV9EqqjhyWnCJzr5avhQm4FSuNPdHdq8c2B7te9HrNnCf3apUAEuuzcGZGV7u9UcxnCdZsX79ESmJmDTx3WUyQcBVhFSAe2vzkej6bdF2vvuq"
+export UP_TOKEN="u7TWaSb5P77g2yGGCWYH9856cy3ePCe5bMXywnBuaFXFSr3QqjsKj45KnwSt4byKLZwmnp4mdGqMJQvtCdM4nD8WcLxJekkPXRt7bymRk6wTRERdwdeJJZ7MS9NcZ....6bdF2vvuq"
 ```
 
 Install the `up` CLI on your local system according to the [Upbound Documentation](https://cloud.upbound.io/docs/cli).
@@ -212,9 +217,12 @@ users:
 ### Enable the Upbound Providers
 Using the `kubeconfig-up-apps.yaml` configuration file add providers to your Upbound Cloud control plane.
 
-- AWS: `kubectl --kubeconfig kubeconfig-up-apps.yaml apply --filename crossplane-config/provider-aws.yaml`
-- SQL: `kubectl --kubeconfig kubeconfig-up-apps.yaml apply --filename crossplane-config/config-sql.yaml`
-- Custom App: `kubectl --kubeconfig kubeconfig-up-apps.yaml apply --filename crossplane-config/config-app.yaml`
+- AWS:  
+`kubectl --kubeconfig kubeconfig-up-apps.yaml apply --filename crossplane-config/provider-aws.yaml`
+- SQL:  
+`kubectl --kubeconfig kubeconfig-up-apps.yaml apply --filename crossplane-config/config-sql.yaml`
+- Custom App:  
+`kubectl --kubeconfig kubeconfig-up-apps.yaml apply --filename crossplane-config/config-app.yaml`
 
 **Verify:**
 ```bash
