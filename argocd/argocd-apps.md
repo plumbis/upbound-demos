@@ -260,7 +260,7 @@ kubectl --kubeconfig kubeconfig-up-apps.yaml describe providerconfigs.aws.crossp
 <details>
 <summary>Example Output</summary>
 
-```yaml
+```bash
 kubectl --kubeconfig kubeconfig-up-apps.yaml get secrets aws-creds -n upbound-system
 NAME        TYPE     DATA   AGE
 aws-creds   Opaque   1      21h
