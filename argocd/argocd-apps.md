@@ -16,6 +16,11 @@ helm upgrade --install argocd argo/argo-cd --namespace argocd --create-namespace
 ```
 
 ### AWS Keys
+**Tasks:**
+1. Generate AWS Access and Secret Keys
+2. Register both keys as environmental variables
+3. Create an `aws-creds.conf` file containing both keys
+
 AWS is leveraged to create an cloud thingy. You will need an `AWS Access Key` and an `AWS Secret Key`. Instructions for creating your keys are available in the [AWS Documentation](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_access-keys.html)
 
 Create local variables `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY`
@@ -34,8 +39,39 @@ aws_secret_access_key = $AWS_SECRET_ACCESS_KEY
 " >aws-creds.conf
 ```
 
+**Verify:**
+```
+echo AWS Access Key: $AWS_ACCESS_KEY_ID
+echo 
+echo AWS Secret Key: $AWS_SECRET_ACCESS_KEY
+echo 
+echo "Credentials File:"
+cat aws-creds.conf
+```
+
+<details>
+<summary> Example Output</summary>
+AWS Access Key: AKIAIOSFODNN7EXAMPLE
+
+AWS Secret Key: wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
+
+Credentials File:
+[default]
+aws_access_key_id = AKIAIOSFODNN7EXAMPLE
+aws_secret_access_key = CwJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY  
+
+</details>
 
 ### Upbound Cloud
+** Tasks:**
+1. Create an Upbound Cloud account.
+2. Create a Hosted control plane.
+3. Create an Upbound user token.
+4. Save the user token as an environmental variable.
+5. Install the `up` CLI on your local system.
+6. Login to Upbound Cloud with `up login`
+7. Save your control plane ID as an environmental variable.
+
 Upbound provides a fully managed control plane for things.  
 
 Follow the [documentation](https://cloud.upbound.io/docs/getting-started/create-account) to create a free account on the [Upbound Cloud](https://cloud.upbound.io). 
@@ -44,13 +80,15 @@ Once logged in, create a new `Hosted`.
 
 Next, generate a [user token](https://cloud.upbound.io/docs/upbound-cloud/connecting-to-control-planes) in the Upbound Cloud. Register this token as a variable as the variable `UP_TOKEN` on your local system.
 
-Replace the sample token below with your private token.
-`export UP_TOKEN="u7TWaSb5P77g2yGGCWYH9856cy3ePCe5bMXywnBuaFXFSr3QqjsKj45KnwSt4byKLZwmnp4mdGqMJQvtCdM4nD8WcLxJekkPXRt7bymRk6wTRERdwdeJJZ7MS9NcZ.uZcYUdpxTyttyNhE2zGCGt9Qz43hfXrq2tpLqd2NCMg87bBrRSQcvaXxqzyEQtnp9ChH-PjBTjtLwr5Et8exwfqFwgGSWHk9_j8L9c6tAn5a5jQRx999puwghn8DJZCMcaZ3jAqngKMFECyTX3aqGtRT8Ts53yDU4ebVbHNtXZnVE9hCnwVp4MgnBeu9ynkcr5kfwrsuuJeNgJLTnQQdJj4TybhMNmZSDNCYYQVV9EqqjhyWnCJzr5avhQm4FSuNPdHdq8c2B7te9HrNnCf3apUAEuuzcGZGV7u9UcxnCdZsX79ESmJmDTx3WUyQcBVhFSAe2vzkej6bdF2vvuq"`
+Replace the sample token below with your private token.  
 
-Use the [Upbound Documentation](https://cloud.upbound.io/docs/cli) to install the `up` CLI on your local system.
+```
+export UP_TOKEN="u7TWaSb5P77g2yGGCWYH9856cy3ePCe5bMXywnBuaFXFSr3QqjsKj45KnwSt4byKLZwmnp4mdGqMJQvtCdM4nD8WcLxJekkPXRt7bymRk6wTRERdwdeJJZ7MS9NcZ.uZcYUdpxTyttyNhE2zGCGt9Qz43hfXrq2tpLqd2NCMg87bBrRSQcvaXxqzyEQtnp9ChH-PjBTjtLwr5Et8exwfqFwgGSWHk9_j8L9c6tAn5a5jQRx999puwghn8DJZCMcaZ3jAqngKMFECyTX3aqGtRT8Ts53yDU4ebVbHNtXZnVE9hCnwVp4MgnBeu9ynkcr5kfwrsuuJeNgJLTnQQdJj4TybhMNmZSDNCYYQVV9EqqjhyWnCJzr5avhQm4FSuNPdHdq8c2B7te9HrNnCf3apUAEuuzcGZGV7u9UcxnCdZsX79ESmJmDTx3WUyQcBVhFSAe2vzkej6bdF2vvuq"
+```
+
+Install the `up` CLI on your local system according to the [Upbound Documentation](https://cloud.upbound.io/docs/cli).
 
 Login to your Upbound Cloud account using the `up login` command.
-
 
 Verify your login with the `up ctp list` command to see your configured Upbound managed control plane.
 ```
@@ -59,9 +97,22 @@ NAME           ID                                     SELF-HOSTED   STATUS
 kubecon-demo   f1bea9c1-ef28-4f84-abcd-1234ba095bd   false         ready
 ```
 
-Use the `ID` value to create the local variable `UP_CTP_ID`. 
+Use the `ID` value to create the local variable `UP_CTP_ID`.  
+
 `export UP_CTP_ID="f1bea9c1-ef28-4f84-abcd-1234ba095bd"`
 
+**Verify:**
+```
+echo Control Plane ID: $UP_CTP_ID
+echo 
+echo User Token: $UP_TOKEN
+```
+<details>
+<summary>Example Output</summary>
+Control Plane ID: f1bea9c1-ef28-4f84-abcd-1234ba095bd
+
+User Token: u7TWaSb5P77g2yGGCWYH9856cy3ePCe5bMXywnBuaFXFSr3QqjsKj45KnwSt4byKLZwmnp4mdGqMJQvtCdM4nD8WcLxJekkPXRt7bymRk6wTRERdwdeJJZ7MS9NcZ.uZcYUdpxTyttyNhE2zGCGt9Qz43hfXrq2tpLqd2NCMg87bBrRSQcvaXxqzyEQtnp9ChH-PjBTjtLwr5Et8exwfqFwgGSWHk9_j8L9c6tAn5a5jQRx999puwghn8DJZCMcaZ3jAqngKMFECyTX3aqGtRT8Ts53yDU4ebVbHNtXZnVE9hCnwVp4MgnBeu9ynkcr5kfwrsuuJeNgJLTnQQdJj4TybhMNmZSDNCYYQVV9EqqjhyWnCJzr5avhQm4FSuNPdHdq8c2B7te9HrNnCf3apUAEuuzcGZGV7u9UcxnCdZsX79ESmJmDTx3WUyQcBVhFSAe2vzkej6bdF2vvuq
+</details>
 
 ## Configure Upbound Cloud
 ### Generate a kubeconfig file 
