@@ -243,10 +243,10 @@ crossplane-provider-sql          True        True      crossplane/provider-sql:v
 </details>
 
 ### Generate and Use the AWS Secret Object
-Use your AWS credentials to generate a secret object in the `upbound-system` namespace
+Use your AWS credentials to generate a secret object in the `upbound-system` namespace  
 `kubectl --kubeconfig kubeconfig-up-apps.yaml --namespace upbound-system create secret generic aws-creds --from-file creds=./aws-creds.conf`
 
-Next, use this token to generate an AWS provider configuration
+Next, use this token to generate an AWS provider configuration  
 `kubectl --kubeconfig kubeconfig-up-apps.yaml apply --filename crossplane-config/provider-config-aws-up.yaml`
 
 
