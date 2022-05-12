@@ -8,8 +8,39 @@
 - An [Upbound Cloud account](#upbound-cloud)
 
 ### Clone the demo
-Clone this demo repo locally 
-`git clone https://github.com/upbound/demos.git --depth 1`
+With [GitHub](https://github.com/upbound/demos/tree/main/argocd), fork this repo to your personal GitHub space.
+
+HTTPS clone the repo to your local environment.
+
+**NOTE:** You *must* use HTTPS to clone the repo for this demo. Do not use the SSH clone method.
+
+After cloning, set the REPO_URL environmental variable.  
+`export REPO_URL=$(git config --get remote.origin.url)`
+
+<details>
+<summary>I can't use HTTPS to clone the repo</summary>
+If you cannot use HTTPS to clone the repo you will still need to use the HTTPS GitHub URL.
+
+![HTTPS URL from GitHub](images/https-repo-url.png)
+
+Use this HTTPS address to create the `REPO_URL` environmental variable.  
+`export REPO_URL=https://github.com/plumbis/upbound-demos.git`
+</details>
+
+**Verify:**
+```bash
+echo $REPO_URL
+```
+
+<details>
+<summary>Example Output</summary>
+
+```bash
+echo $REPO_URL
+https://github.com/plumbis/upbound-demos.git
+```
+
+</details>
 
 ### Rancher Desktop
 This demo relies on [Rancher Desktop](https://rancherdesktop.io/) to provide the Kubernetes infrastructure. Any other Kubernetes environment can be used, but an ingress must be used to access the ArgoCD dashboard.  
@@ -285,7 +316,9 @@ Events:  <none>
 
 </details>
 
-## Install ArgoCD
+## Install and Configure ArgoCD
+
+### Install ArgoCD
 **Tasks:**
 1. Add the Helm repo
 2. Update the Helm cache
@@ -366,18 +399,73 @@ Now you should be able to access the ArgoCD web interface at using the default c
 **Username** `admin`  
 **Password** `admin123`  
   
+<details>
+<summary> ArgoCD Login</summary>
 
 ![ArgoCD Login](images/argo-login.gif)
 
-### Generate an ArgoCD Application Project
-Use the provided YAML file to create an ArgoCD `AppProject` Kubernetes CRD named `upbound`.
+</details>
+
+### Generate ArgoCD Kubernetes Custom Resources
+**Tasks:**
+1. Create an AppProject CRD
+2. Customize and create two Application CRDs
+
+Using the YAML file in this forked repo, create an ArgoCD `AppProject` Kubernetes CRD named `upbound`.
 `kubectl --namespace argocd apply --filename argocd/project.yaml`
 
-And verify 
-```
-kubectl get appproject -n argocd
-NAME      AGE
-default   16h
-upbound   2s
+Next, customize the provided Application manifests to use your Upbound control plane URL and git repo.
+
+Confirm that both the `$SERVER` and `$REPO_URL` environmental variables have been set.
+
+```bash
+echo $SERVER
+echo $REPO_URL
 ```
 
+Edit both the `argocd/app-infra.yaml` and `argocd/app-apps.yaml` files, replacing `spec.source.repoURL` with your GitHub repo HTTPS URL and `spec.destination.server` with your Upbound control plane URL.
+
+The following sed commands will edit both files, generating two new files named `customized-app-infra.yaml` and `customized-app-apps.yaml`. 
+
+```bash
+cat argocd/app-infra.yaml \
+    | sed -e "s@server: .*@server: $SERVER@g" \
+    | sed -e "s@repoURL: .*@repoURL: $REPO_URL@g" \
+    | tee argocd/customized-app-infra.yaml
+
+cat argocd/app-apps.yaml \
+    | sed -e "s@server: .*@server: $SERVER@g" \
+    | sed -e "s@repoURL: .*@repoURL: $REPO_URL@g" \
+    | tee argocd/customized-app-apps.yaml
+```
+
+Create the `Application` CRDs by applying the new manifests.  
+`kubectl --namespace argocd apply --filename argocd/customized-app-infra.yaml`  
+`kubectl --namespace argocd apply --filename argocd/customized-app-apps.yaml`
+
+
+**Verify:**
+```bash
+kubectl get appproject upbound -n argocd
+kubectl get application upbound-infra -n argocd
+kubectl get application upbound-apps -n argocd
+```
+
+<details>
+<summary>Sample Output</summary>
+
+```bash
+kubectl get appproject upbound -n argocd
+NAME      AGE
+upbound   5h51m
+
+kubectl get application upbound-infra -n argocd
+NAME            SYNC STATUS   HEALTH STATUS
+upbound-infra   Synced        Healthy
+
+kubectl get application upbound-apps -n argocd
+NAME           SYNC STATUS   HEALTH STATUS
+upbound-apps   Synced        Healthy
+```
+
+</details>
