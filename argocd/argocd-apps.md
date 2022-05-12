@@ -18,7 +18,7 @@ This demo relies on [Rancher Desktop](https://rancherdesktop.io/) to provide the
 <summary> I'm not using Rancher Desktop</summary>
 If another environment is used replace the localhost address `127.0.0.1` used in the ArgoCD Helm command with your external IP.
 
-```console
+```bash
 helm upgrade --install argocd argo/argo-cd --namespace argocd --create-namespace --set server.ingress.hosts="{argo-cd.127.0.0.1.nip.io}" --values argocd/helm-values.yaml --wait
 ```
 
@@ -125,7 +125,7 @@ echo User Token: $UP_TOKEN
 <details>
 <summary>Example Output</summary>
 
-```console
+```bash
 Control Plane ID: f1bea9c1-ef28-4f84-abcd-1234ba095bd
 
 User Token: u7TWaSb5P77g2yGGCWYH9856cy3ePCe5bMXywnBuaFXFSr3QqjsKj45KnwSt4byKLZwmnp4mdGqMJQvtCdM4nD8WcLxJekkPXRt7bymRk6wTRERdwdeJJZ7MS9NcZ.uZcYUdpxTyttyNhE2zGCGt9Qz43hfXrq2tpLqd2NCMg87bBrRSQcvaXxqzyEQtnp9ChH-PjBTjtLwr5Et8exwfqFwgGSWHk9_j8L9c6tAn5a5jQRx999puwghn8DJZCMcaZ3jAqngKMFECyTX3aqGtRT8Ts53yDU4ebVbHNtXZnVE9hCnwVp4MgnBeu9ynkcr5kfwrsuuJeNgJLTnQQdJj4TybhMNmZSDNCYYQVV9EqqjhyWnCJzr5avhQm4FSuNPdHdq8c2B7te9HrNnCf3apUAEuuzcGZGV7u9UcxnCdZsX79ESmJmDTx3WUyQcBVhFSAe2vzkej6bdF2vvuq
@@ -149,7 +149,7 @@ The settings are written to `kubeconfig-up-apps.yaml`
 
 **Verify**
 
-```console
+```bash
 cat kubeconfig-up-apps.yaml
 ```
 
@@ -186,14 +186,14 @@ Using the `kubeconfig-up-apps.yaml` configuration file add providers to your Upb
 - Custom App: `kubectl --kubeconfig kubeconfig-up-apps.yaml apply --filename crossplane-config/config-app.yaml`
 
 **Verify:**
-```console
+```bash
 kubectl --kubeconfig kubeconfig-up-apps.yaml get providers
 ```
 
 <details>
 <summary>Example Output</summary>
 
-```console
+```bash
 kubectl --kubeconfig kubeconfig-up-apps.yaml get providers
 NAME                             INSTALLED   HEALTHY   PACKAGE                                 AGE
 crossplane-provider-aws          True        True      crossplane/provider-aws:v0.24.1         21h
@@ -212,7 +212,7 @@ Next, use this token to generate an AWS provider configuration
 
 
 **Verify:**
-```console
+```bash
 kubectl --kubeconfig kubeconfig-up-apps.yaml get secrets aws-creds -n upbound-system  
 
 kubectl --kubeconfig kubeconfig-up-apps.yaml describe providerconfigs.aws.crossplane.io default
@@ -323,6 +323,16 @@ stringData:
     apply --filename -
 ```
 
+**Verify:**
+```bash
+kubectl get pods -n argocd
+echo 
+kubectl describe secret upbound -n argocd
+```
+
+<details>
+<summary>Example Output</summary>
+
 ```bash
 kubectl get pods -n argocd
 NAME                                                READY   STATUS    RESTARTS   AGE
@@ -333,31 +343,7 @@ argocd-dex-server-7847bfd667-vhjrw                  1/1     Running   0         
 argocd-server-d588c9ccd-hvbdm                       1/1     Running   0          15h
 argocd-repo-server-787b6699dc-dws6d                 1/1     Running   0          15h
 argocd-application-controller-0                     1/1     Running   0          15h
-```
 
-## Create a secret in the argocd namespace
-```yaml
-echo "apiVersion: v1
-kind: Secret
-metadata:
-  name: upbound
-  labels:
-    argocd.argoproj.io/secret-type: cluster
-type: Opaque
-stringData:
-  name: upbound
-  server: $SERVER
-  config: |
-    {
-      \"bearerToken\": \"$UP_TOKEN\"
-    }" \
-    | kubectl \
-    --namespace argocd \
-    apply --filename -
-```
-
-and Verify
-```console
 kubectl describe secret upbound -n argocd
 Name:         upbound
 Namespace:    argocd
@@ -368,18 +354,20 @@ Type:  Opaque
 
 Data
 ====
-config:  490 bytes
 name:    7 bytes
 server:  75 bytes
+config:  490 bytes
 ```
 
+</details>
 
-### Login to ArgoCD
-Verify you can access ArgoCD
-http://argo-cd.127.0.0.1.nip.io
-<!-- argologin.gif -->
-**Username** `admin`
-**Password** `admin123`
+Now you should be able to access the ArgoCD web interface at using the default credentials:  
+**URL** [http://argo-cd.127.0.0.1.nip.io](http://argo-cd.127.0.0.1.nip.io)  
+**Username** `admin`  
+**Password** `admin123`  
+  
+
+![ArgoCD Login](images/argo-login.gif)
 
 ### Generate an ArgoCD Application Project
 Use the provided YAML file to create an ArgoCD `AppProject` Kubernetes CRD named `upbound`.
