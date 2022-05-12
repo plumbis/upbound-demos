@@ -342,7 +342,7 @@ Install ArgoCD on your Kubernetes environment
 - Install the ArgoCD Helm Chart  
 `helm upgrade --install argocd argo/argo-cd --namespace argocd --create-namespace --set server.ingress.hosts="{argo-cd.127.0.0.1.nip.io}" --values argocd/helm-values.yaml --wait`
 
-Next, use the following code snippet to generate a Kubernetes secret in the argocd namespace.  
+Use the following code snippet to generate a Kubernetes secret in the argocd namespace.  
 
 ```yaml
 echo "apiVersion: v1
@@ -366,8 +366,7 @@ stringData:
 
 **Verify:**
 ```bash
-kubectl get pods -n argocd
-echo 
+kubectl get pods -n argocd 
 kubectl describe secret upbound -n argocd
 ```
 
@@ -419,7 +418,7 @@ Now you should be able to access the ArgoCD web interface at using the default c
 1. Create an AppProject CRD
 2. Customize and create two Application CRDs
 
-Using the YAML file in this forked repo, create an ArgoCD `AppProject` Kubernetes CRD named `upbound`.
+Using the YAML file in this forked repo, create an ArgoCD `AppProject` Kubernetes CRD named `upbound`.  
 `kubectl --namespace argocd apply --filename argocd/project.yaml`
 
 Next, customize the provided Application manifests to use your Upbound control plane URL and git repo.
