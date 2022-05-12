@@ -229,8 +229,8 @@ aws-creds   Opaque   1      21h
 kubectl --kubeconfig kubeconfig-up-apps.yaml describe providerconfigs.aws.crossplane.io default
 Name:         default
 Namespace:
-Labels:       &lt;none&gt;
-Annotations:  &lt;none&gt;
+Labels:       <none>
+Annotations:  <none>
 API Version:  aws.crossplane.io/v1beta1
 Kind:         ProviderConfig
 Metadata:
@@ -280,7 +280,7 @@ Spec:
       Namespace:  upbound-system
     Source:       Secret
 Status:
-Events:  &lt;none&gt;
+Events:  <none>
 ```
 
 </details>
@@ -323,7 +323,7 @@ stringData:
     apply --filename -
 ```
 
-```console
+```bash
 kubectl get pods -n argocd
 NAME                                                READY   STATUS    RESTARTS   AGE
 argocd-redis-6484cccf5-rm4pk                        1/1     Running   0          15h
