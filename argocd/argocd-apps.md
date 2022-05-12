@@ -66,7 +66,7 @@ aws_secret_access_key = CwJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY
 </details>
 
 ### Upbound Cloud
-** Tasks:**
+**Tasks:**
 1. Create an Upbound Cloud account.
 2. Create a Hosted control plane.
 3. Create an Upbound user token.
@@ -79,7 +79,7 @@ Upbound provides a fully managed control plane for things.
 
 Follow the [documentation](https://cloud.upbound.io/docs/getting-started/create-account) to create a free account on the [Upbound Cloud](https://cloud.upbound.io). 
 
-Once logged in, create a new `Hosted`.
+Once your account is created and you login to the cloud administration portal, create a new `Hosted`.
 
 Next, generate a [user token](https://cloud.upbound.io/docs/upbound-cloud/connecting-to-control-planes) in the Upbound Cloud. Register this token as a variable as the variable `UP_TOKEN` on your local system.
 
@@ -98,7 +98,7 @@ Verify your login with the `up ctp list` command to see your configured Upbound 
 ```
 up ctp list
 NAME           ID                                     SELF-HOSTED   STATUS
-kubecon-demo   f1bea9c1-ef28-4f84-abcd-1234ba095bd   false         ready
+demo   f1bea9c1-ef28-4f84-abcd-1234ba095bd   false         ready
 ```
 
 Use the `ID` value to create the local variable `UP_CTP_ID`.  
@@ -123,6 +123,11 @@ User Token: u7TWaSb5P77g2yGGCWYH9856cy3ePCe5bMXywnBuaFXFSr3QqjsKj45KnwSt4byKLZwm
 </details>
 
 ## Configure Upbound Cloud
+**Tasks:**
+1. Generate a kubeconfig file.
+2. Enable the Upbound providers.
+3. Generate a Kubernetes secret object with your AWS credentials.
+
 ### Generate a kubeconfig file 
 Generate a *kubeconfig* file with the settings for your Upbound Cloud control plane.  
 This simplifies the `kubectl` command settings for the rest of this demo.  
@@ -131,6 +136,36 @@ This simplifies the `kubectl` command settings for the rest of this demo.
 
 The settings are written to `kubeconfig-up-apps.yaml`
 
+**Verify**
+```
+cat kubeconfig-up-apps.yaml
+```
+
+<details>
+<summary>Example Output</summary>
+
+```
+apiVersion: v1
+clusters:
+- cluster:
+    server: https://proxy.upbound.io/controlPlanes/f1bea9c1-ef28-4f84-abcd-1234ba095bd
+  name: upbound-f1bea9c1-ef28-4f84-abcd-1234ba095bd
+contexts:
+- context:
+    cluster: upbound-f1bea9c1-ef28-4f84-abcd-1234ba095bd
+    user: upbound-f1bea9c1-ef28-4f84-abcd-1234ba095bd
+  name: upbound-f1bea9c1-ef28-4f84-abcd-1234ba095bd
+current-context: upbound-f1bea9c1-ef28-4f84-abcd-1234ba095bd
+kind: Config
+preferences: {}
+users:
+- name: upbound-f1bea9c1-ef28-4f84-abcd-1234ba095bd
+  user:
+    token: u7TWaSb5P77g2yGGCWYH9856cy3ePCe5bMXywnBuaFXFSr3QqjsKj45KnwSt4byKLZwmnp4mdGqMJQvtCdM4nD8WcLxJekkPXRt7bymRk6wTRERdwdeJJZ7MS9NcZ.uZcYUdpxTyttyNhE2zGCGt9Qz43hfXrq2tpLqd2NCMg87bBrRSQcvaXxqzyEQtnp9ChH-PjBTjtLwr5Et8exwfqFwgGSWHk9_j8L9c6tAn5a5jQRx999puwghn8DJZCMcaZ3jAqngKMFECyTX3aqGtRT8Ts53yDU4ebVbHNtXZnVE9hCnwVp4MgnBeu9ynkcr5kfwrsuuJeNgJLTnQQdJj4TybhMNmZSDNCYYQVV9EqqjhyWnCJzr5avhQm4FSuNPdHdq8c2B7te9HrNnCf3apUAEuuzcGZGV7u9UcxnCdZsX79ESmJmDTx3WUyQcBVhFSAe2vzkej6bdF2vvuq
+```
+
+</summary>
+
 ### Enable the Upbound Providers
 Using the `kubeconfig-up-apps.yaml` configuration file add providers to your Upbound Cloud control plane.
 
@@ -138,24 +173,23 @@ Using the `kubeconfig-up-apps.yaml` configuration file add providers to your Upb
 - SQL: `kubectl --kubeconfig kubeconfig-up-apps.yaml apply --filename crossplane-config/config-sql.yaml`
 - Custom App: `kubectl --kubeconfig kubeconfig-up-apps.yaml apply --filename crossplane-config/config-app.yaml`
 
-
-### Verify Upbound Cloud Providers
-Use the command `kubectl --kubeconfig kubeconfig-up-apps.yaml get pkgrev` to view the applied configurations.
-
+**Verify:**
 ```
-kubectl --kubeconfig kubeconfig-up-apps.yaml get pkgrev
-NAME                                                                  HEALTHY   REVISION   IMAGE                                                   STATE    DEP-FOUND   DEP-INSTALLED   AGE
-configurationrevision.pkg.crossplane.io/crossplane-app-fe40d313c940   True      1          xpkg.upbound.io/devops-toolkit/dot-application:v0.3.2   Active   1           1               30m
-configurationrevision.pkg.crossplane.io/crossplane-sql-c9472b165f3a   True      1          xpkg.upbound.io/devops-toolkit/dot-sql:v0.3.3           Active   2           2               30m
-
-NAME                                                                             HEALTHY   REVISION   IMAGE                                   STATE    DEP-FOUND   DEP-INSTALLED   AGE
-providerrevision.pkg.crossplane.io/crossplane-provider-aws-f78664a342f1          True      1          crossplane/provider-aws:v0.24.1         Active                               32m
-providerrevision.pkg.crossplane.io/crossplane-provider-helm-3d2f09bcd965         True      1          crossplane/provider-helm:v0.10.0        Active                               30m
-providerrevision.pkg.crossplane.io/crossplane-provider-kubernetes-e3a9c3ae909b   True      1          crossplane/provider-kubernetes:v0.3.0   Active                               30m
-providerrevision.pkg.crossplane.io/crossplane-provider-sql-8e2bcdde315d          True      1          crossplane/provider-sql:v0.4.1          Active                               30m
+kubectl --kubeconfig kubeconfig-up-apps.yaml get providers
 ```
 
-Two configurations (`app`, `sql`) and four providers (`aws`, `helm`, `kubernetes`, `sql`) should be listed. 
+<details>
+<summary>Example Output</summary>
+
+```
+kubectl --kubeconfig kubeconfig-up-apps.yaml get providers
+NAME                             INSTALLED   HEALTHY   PACKAGE                                 AGE
+crossplane-provider-aws          True        True      crossplane/provider-aws:v0.24.1         21h
+crossplane-provider-helm         True        True      crossplane/provider-helm:v0.10.0        21h
+crossplane-provider-kubernetes   True        True      crossplane/provider-kubernetes:v0.3.0   21h
+crossplane-provider-sql          True        True      crossplane/provider-sql:v0.4.1          21h
+```
+</details>
 
 ### Generate and Use the AWS Secret Object
 Use your AWS credentials to generate a secret object in the `upbound-system` namespace
